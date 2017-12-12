@@ -6,37 +6,23 @@ import Result.Extra as RExtra
 captcha1 : String -> Result String Int
 captcha1 str =
     toList str
-        |> Result.map simpleCaptcha
+        |> Result.map (rotateCaptcha 1)
 
 
 captcha2 : String -> Result String Int
 captcha2 str =
     toList str
-        |> Result.map halfCaptcha
+        |> Result.map
+            (\list ->
+                rotateCaptcha (List.length list // 2) list
+            )
 
 
-simpleCaptcha : List Int -> Int
-simpleCaptcha list =
+rotateCaptcha : Int -> List Int -> Int
+rotateCaptcha rotation list =
     let
         pairList =
-            List.map2 (,) list (rotateList 1 list)
-
-        filter ( a, b ) =
-            a == b
-    in
-        List.filter filter pairList
-            |> List.map Tuple.first
-            |> List.sum
-
-
-halfCaptcha : List Int -> Int
-halfCaptcha list =
-    let
-        len =
-            List.length list
-
-        pairList =
-            List.map2 (,) list (rotateList (len // 2) list)
+            List.map2 (,) list (rotateList rotation list)
 
         filter ( a, b ) =
             a == b
