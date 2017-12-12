@@ -1,24 +1,42 @@
-module Challenge01 exposing (captcha, readCaptcha)
+module Challenge01 exposing (captcha1, captcha2)
 
 import Result.Extra as RExtra
 
 
-captcha : List Int -> Int
-captcha list =
+captcha1 : String -> Result String Int
+captcha1 str =
+    toList str
+        |> Result.map simpleCaptcha
+
+
+captcha2 : String -> Result String Int
+captcha2 str =
+    toList str
+        |> Result.map halfCaptcha
+
+
+simpleCaptcha : List Int -> Int
+simpleCaptcha list =
     let
-        nextItemList =
-            case ( List.head list, List.tail list ) of
-                ( Just x, Just xs ) ->
-                    xs ++ [ x ]
+        pairList =
+            List.map2 (,) list (rotateList 1 list)
 
-                ( Just x, Nothing ) ->
-                    [ x ]
+        filter ( a, b ) =
+            a == b
+    in
+        List.filter filter pairList
+            |> List.map Tuple.first
+            |> List.sum
 
-                _ ->
-                    []
+
+halfCaptcha : List Int -> Int
+halfCaptcha list =
+    let
+        len =
+            List.length list
 
         pairList =
-            List.map2 (,) list nextItemList
+            List.map2 (,) list (rotateList (len // 2) list)
 
         filter ( a, b ) =
             a == b
@@ -35,7 +53,21 @@ toList str =
         |> RExtra.combine
 
 
-readCaptcha : String -> Result String Int
-readCaptcha str =
-    toList str
-        |> Result.map captcha
+rotateList : Int -> List a -> List a
+rotateList amount list =
+    case list of
+        [] ->
+            []
+
+        list ->
+            let
+                len =
+                    List.length list
+
+                repeatedList =
+                    List.repeat (amount // len + 1) list
+                        |> List.concat
+            in
+                (List.drop amount repeatedList)
+                    ++ (List.take amount repeatedList)
+                    |> List.take len
