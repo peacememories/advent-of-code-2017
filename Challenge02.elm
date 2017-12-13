@@ -1,4 +1,4 @@
-module Challenge02 exposing (..)
+module Challenge02 exposing (main)
 
 import Result.Extra as RExtra
 import List.Extra as LExtra
