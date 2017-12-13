@@ -81,7 +81,7 @@ view model =
             , text <|
                 case
                     parseInput model.input
-                        |> Result.map division
+                        |> Result.andThen division
                 of
                     Result.Ok result ->
                         toString result
