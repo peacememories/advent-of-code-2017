@@ -115,11 +115,11 @@ parseLine str =
 
 checksum : List (List Int) -> Int
 checksum list =
-    List.filterMap (lineChecksum >> Result.toMaybe) list
+    List.filterMap lineChecksum list
         |> List.sum
 
 
-lineChecksum : List Int -> Result String Int
+lineChecksum : List Int -> Maybe Int
 lineChecksum list =
     let
         minimum =
@@ -129,7 +129,6 @@ lineChecksum list =
             List.maximum list
     in
         Maybe.map2 (-) maximum minimum
-            |> Result.fromMaybe "Line was empty"
 
 
 
