@@ -83,8 +83,8 @@ add ( x1, y1 ) ( x2, y2 ) =
 
 {-| Actually not necessary because part 1 is solved differently
 -}
-hamiltonDistance : Pos -> Int
-hamiltonDistance ( x, y ) =
+manhattanDistance : Pos -> Int
+manhattanDistance ( x, y ) =
     x + y
 
 
