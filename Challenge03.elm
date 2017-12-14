@@ -1,4 +1,4 @@
-module Challenge03 exposing (..)
+module Challenge03 exposing (challenge03a, challenge03b)
 
 import List.Extra as LExtra
 import Array
