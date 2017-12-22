@@ -1,12 +1,13 @@
 module Challenge07 exposing (..)
 
+import Char
 import Element exposing (..)
 import Element.Input as Input
+import Graph.Tree as Tree exposing (Tree)
 import Html exposing (Html)
 import Parser exposing (..)
-import Parser.LanguageKit exposing (..)
 import Style exposing (..)
-import Char
+
 
 main : Program Never Model Msg
 main =
@@ -80,6 +81,111 @@ view model =
 --     let
 --         edgeList = sepBy ()
 --         lineParser = sepBy newline ()
+-- insertNode : InputLine -> Dict String (Tree String) -> List (Tree String)
+-- insertNode {name, connections} forest =
+--     let
+--         newNode =
+--             Tree.inner name (connection
+--             |> List.map (\))
+--         rootFilter tree =
+--             case Tree.root of
+--                 Just (rootLabel, rootChildren) ->
+--                     if List.member rootLabel connections then
+--                         False
+--                     else
+--                         True
+--                 Nothing ->
+--                     False
+--         newForest =
+--             List.filter rootFilter forest
+--     in
+
+
+setLabel : label -> List (Tree label) -> Tree label -> Tree label
+setLabel label children tree =
+    case Tree.root tree of
+        Just ( rootLabel, children ) ->
+            if rootLabel == label then
+                Tree.inner label children
+            else
+                Tree.inner rootLabel
+                    (children
+                        |> List.map (setLabel label children)
+                    )
+
+        Nothing ->
+            Tree.empty
+
+
+findLabel : label -> Tree label -> Maybe (Tree label)
+findLabel label tree =
+    case Tree.root tree of
+        Just ( rootLabel, children ) ->
+            if rootLabel == label then
+                Just tree
+            else
+                children
+                    |> List.filterMap (findLabel label)
+                    |> List.head
+
+        Nothing ->
+            Nothing
+
+
+
+-- (label, List (Tree label)) -> Tree label
+-- (label, children) =
+-- Tree.inner label (List.filterMap (modifyTree modifier))
+
+
+type alias InputLine =
+    { name : String
+    , weight : Int
+    , connections : List String
+    }
+
+
+input : Parser (List InputLine)
+input =
+    sepBy (symbol "\n") line
+
+
+line : Parser InputLine
+line =
+    let
+        arrow =
+            symbol "->"
+    in
+    succeed InputLine
+        |= name
+        |. whitespace
+        |= weight
+        |. whitespace
+        |. arrow
+        |. whitespace
+        |= edgeList
+
+
+whitespace : Parser String
+whitespace =
+    keep zeroOrMore (\c -> c == ' ')
+
+
+name : Parser String
+name =
+    let
+        isValidChar c =
+            Char.isUpper c || Char.isLower c || Char.isDigit c
+    in
+    keep oneOrMore isValidChar
+
+
+weight : Parser Int
+weight =
+    succeed identity
+        |. symbol "("
+        |= int
+        |. symbol ")"
 
 
 edgeList : Parser (List String)
@@ -87,11 +193,8 @@ edgeList =
     let
         separator =
             symbol ","
-
-        name =
-            keep oneOrMore (\c -> Char.)
     in
-    surroundedBy whitespace (sepBy symbol)
+    surroundedBy whitespace (sepBy (surroundedBy whitespace separator) name)
 
 
 sepBy : Parser a -> Parser b -> Parser (List b)

@@ -10,6 +10,7 @@
     "dependencies": {
         "Gizra/elm-all-set": "1.0.0 <= v < 2.0.0",
         "elm-community/array-extra": "1.0.2 <= v < 2.0.0",
+        "elm-community/graph": "4.0.1 <= v < 5.0.0",
         "elm-community/lazy-list": "1.0.0 <= v < 2.0.0",
         "elm-community/list-extra": "7.0.0 <= v < 8.0.0",
         "elm-community/result-extra": "2.2.0 <= v < 3.0.0",
